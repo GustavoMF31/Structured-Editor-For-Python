@@ -88,7 +88,6 @@ nnoremap <buffer> < :LessThan<Enter>
 nnoremap <buffer> <= :LessThanEquals<Enter>
 nnoremap <buffer> & :And<Enter>
 nnoremap <buffer> <Bar> :Or<Enter>
-nnoremap <buffer> <= :LessThanEquals<Enter>
 " b stands for "be", (so it IS something)
 nnoremap <buffer> cb :Is<Enter>
 nnoremap <buffer> cn :In<Enter>
