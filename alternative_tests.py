@@ -87,7 +87,7 @@ def identical_nodes(tree1, tree2):
 
 
 if __name__ == '__main__':
-    with open('python_file_examples/dummy.py', 'r') as f:
+    with open('python_file_examples/sudoku.py', 'r') as f:
         tree = ast.parse(f.read())
 
     test_action_sequences(tree, 3)
