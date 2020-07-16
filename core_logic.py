@@ -1,49 +1,14 @@
 import ast
 from functools import reduce
+from banned_nodes import banned_nodes
 
 
 def list_children(ast_node):
 
-    # Those are reported as nodes by ast.iter_child_nodes(parent)
-    # But cause trouble down the road
-    # (AttributeErrors when navigating to them)
-    # TODO: Move the banned nodes to a different file
-    troublemaker_nodes = [
-            ast.Load,
-            ast.Store,
-            ast.Del,
-            ast.AugLoad,
-            ast.AugStore,
-            ast.Param,
-            ast.Eq,
-            ast.NotEq,
-            ast.Lt,
-            ast.LtE,
-            ast.Gt,
-            ast.GtE,
-            ast.Is,
-            ast.IsNot,
-            ast.In,
-            ast.Add,
-            ast.Sub,
-            ast.Mult,
-            ast.MatMult,
-            ast.Div,
-            ast.Mod,
-            ast.Pow,
-            ast.LShift,
-            ast.RShift,
-            ast.BitOr,
-            ast.BitXor,
-            ast.BitAnd,
-            ast.FloorDiv,
-            ast.And,
-            ast.Or,
-            ]
-
-    # So filter them out
+    # Filter out the banned nodes
+    # (They cause errors when navigating)
     return list(filter(
-                lambda x : type(x) not in troublemaker_nodes,
+                lambda x : type(x) not in banned_nodes,
                 ast.iter_child_nodes(ast_node)
             ))
 
