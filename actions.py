@@ -264,6 +264,15 @@ def delete(cursor_trail, tree, _):
                 print("A Try block needs handlers or a finally")
                 return
 
+        if isinstance(parent, ast.Dict):
+            # If it's a dictionary, keep the key value pairs synced
+            # by deleting the correspondig key/value
+            if fieldname == "keys":
+                parent.values.pop(index)
+
+            if fieldname == "values":
+                parent.keys.pop(index)
+
         if isinstance(parent, ast.BoolOp):
             if len(children_list) < 3:
                 print("A boolean operation must have at least 2 operands")
@@ -281,7 +290,7 @@ def delete(cursor_trail, tree, _):
         
         children_list.pop(index)
 
-        # If there are no more childre, move up
+        # If there are no more children, move up
         if len(children_list) == 0:
             cursor_trail.pop()
 
