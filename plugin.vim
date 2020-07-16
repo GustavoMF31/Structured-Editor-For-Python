@@ -41,6 +41,10 @@ command! -buffer -nargs=0 In exec 'py3 act("in")'
 command! -buffer -nargs=0 And exec 'py3 act("and")'
 command! -buffer -nargs=0 Or exec 'py3 act("or")'
 command! -buffer -nargs=0 Extend exec 'py3 act("extend")'
+command! -buffer -nargs=0 MakeInvert exec 'py3 act("make_invert")'
+command! -buffer -nargs=0 MakeNot exec 'py3 act("make_not")'
+command! -buffer -nargs=0 MakeUAdd exec 'py3 act("make_uadd")'
+command! -buffer -nargs=0 MakeUSub exec 'py3 act("make_usub")'
 command! -buffer -nargs=0 Import exec 'py3 act("make_import")'
 command! -buffer -nargs=0 MakeFor exec 'py3 act("make_for")'
 command! -buffer -nargs=0 MakeWhile exec 'py3 act("make_while")'
@@ -88,6 +92,11 @@ nnoremap <buffer> < :LessThan<Enter>
 nnoremap <buffer> <= :LessThanEquals<Enter>
 nnoremap <buffer> & :And<Enter>
 nnoremap <buffer> <Bar> :Or<Enter>
+nnoremap <buffer> ! :Not<Enter>
+nnoremap <buffer> ~ :MakeInvert<Enter>
+" TODO: Move the ++ and -- behavior to the + and - keys
+nnoremap <buffer> ++ :MakeUAdd<Enter>
+nnoremap <buffer> -- :MakeUSub<Enter>
 " b stands for "be", (so it IS something)
 nnoremap <buffer> cb :Is<Enter>
 nnoremap <buffer> cn :In<Enter>

@@ -44,9 +44,9 @@ list_of_action_names_strategy = list_of_action_names_strategy.map(lambda l : ["c
 @given(st.builds(deepcopy, st.sampled_from(trees)), list_of_action_names_strategy)
 @example(deepcopy(trees[0]), [
     'cursor_down',
-     'make_call',
+     'make_if',
      'cursor_down',
-     'make_if_exp', "extend" ] 
+     'make_bin_op', "make_not" ] 
      )
 def action_sequence_keeps_ast_valid(file, list_of_action_names):
     # This function assumes the actions don't have local state

@@ -433,6 +433,7 @@ def make_default_name(cursor_trail, tree):
     return ast.Name(id="x", ctx=ctx)
 
 
+# TODO: Move this to core_logic
 def get_context_for_child(parent, child):
     parent_ctx = getattr(parent, "ctx", None)
     if isinstance(parent_ctx, ast.Load):
@@ -461,12 +462,43 @@ def make_default_string(get_user_input):
     return ast.Constant(value=string, kind=None)
 
 
+def make_default_not(cursor_trail, tree):
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+
+    if isinstance(expr, ast.UnaryOp) and isinstance(expr.op, ast.Not):
+        # Having not not x doesn't really make sense
+        # So let's just remove the not in this case
+        return expr.operand
+ 
+    return ast.UnaryOp(op=ast.Not(), operand=expr)
+        
+
+def make_default_invert(cursor_trail, tree):
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+
+    return ast.UnaryOp(op=ast.Invert(), operand=expr)
+
+
+def make_default_usub(cursor_trail, tree):
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+
+    if isinstance(expr, ast.UnaryOp) and isinstance(expr.op, ast.USub):
+        # Having - - x doesn't really make sense
+        # So let's just remove the minus in this case
+        return expr.operand
+ 
+    return ast.UnaryOp(op=ast.USub(), operand=expr)
+
+
 # Those actions return different nodes depending on the context
-dependent_actions = ["async", "list", "call", "attribute", "named_expression", "tuple", "name"]
+dependent_actions = ["async", "list", "call", "attribute", "named_expression", "tuple", "name", "not", "usub", "invert"]
 
 # Those actions need user input
 user_input_actions = ["string"]
-
+#
 nodes = {
     # "name" : (validator, creator)
     "class": (v.is_instance_of(ast.stmt), make_default_class),
@@ -526,5 +558,8 @@ nodes = {
     "named_expression": (v.is_simple_expression, make_default_named_expression),
     "tuple": (v.is_instance_of(ast.expr), make_default_tuple),
     "name": (v.is_instance_of(ast.expr), make_default_name),
+    "not": (v.is_simple_expression, make_default_not),
+    "invert": (v.is_simple_expression, make_default_invert),
+    "usub": (v.is_simple_expression, make_default_usub),
  }
 
