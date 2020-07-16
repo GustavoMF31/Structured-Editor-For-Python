@@ -71,6 +71,7 @@ command! -buffer -nargs=0 MakeIfExp exec 'py3 act("make_if_exp")'
 command! -buffer -nargs=0 MakeNamedExpression exec 'py3 act("make_named_expression")'
 command! -buffer -nargs=0 MakeTuple exec 'py3 act("make_tuple")'
 command! -buffer -nargs=0 MakeName exec 'py3 act("make_name")'
+command! -buffer -nargs=0 MakeDict exec 'py3 act("make_dict")'
 
 nnoremap <buffer> s :Save<Enter>
 nnoremap <buffer> h :CursorLeft<Enter>
@@ -95,7 +96,7 @@ nnoremap <buffer> <Bar> :Or<Enter>
 nnoremap <buffer> ! :Not<Enter>
 nnoremap <buffer> ~ :MakeInvert<Enter>
 " TODO: Move the ++ and -- behavior to the + and - keys
-nnoremap <buffer> ++ :MakeUAdd<Enter>
+" nnoremap <buffer> ++ :MakeUAdd<Enter>
 nnoremap <buffer> -- :MakeUSub<Enter>
 " b stands for "be", (so it IS something)
 nnoremap <buffer> cb :Is<Enter>
@@ -146,3 +147,5 @@ nnoremap <buffer> ca :MakeNamedExpression<Enter>
 nnoremap <buffer> ct :MakeTuple<Enter>
 " v stands for variable
 nnoremap <buffer> cv :MakeName<Enter>
+nnoremap <buffer> cd :MakeDict<Enter>
+

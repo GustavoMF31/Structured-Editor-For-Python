@@ -36,6 +36,9 @@ x deletes the selected node when possible (It won't work if you try to empty the
 t adds a type annotation to the selected node
 e "extends" the selected node (Usually adds an else statement)
 + - * % / ^ = >= < <= & | change the selected operation 
+! makes a not
+~ is the tilde operator (called invert)
+-- makes the selected node negative (-x)
 ```
 
 ## Actions for creating nodes
@@ -73,4 +76,5 @@ ch makes an if expression
 ca makes a names expression (a := b)
 ct makes a tuple
 cv makes a variable
+cd makes a dictionary
 ```
