@@ -523,6 +523,7 @@ def make_default_generator(cursor_trail, tree):
     ListComp(expr elt, comprehension* generators)
     SetComp(expr elt, comprehension* generators)
     DictComp(expr key, expr value, comprehension* generators)
+    GeneratorExp(expr elt, comprehension* generators)
     """
 
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
@@ -539,6 +540,12 @@ def make_default_generator(cursor_trail, tree):
         elts = {"key": selected_node.keys[0],
                 "value": selected_node.values[0]
                 }
+    else:
+        comprehension = ast.GeneratorExp
+        expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+
+        elts = {"elt": expr}
+
 
     return comprehension(**elts, generators=[make_default_comprehension()])
 
@@ -632,10 +639,6 @@ nodes = {
     "usub": (v.is_simple_expression, make_default_usub),
     "dict": (v.is_simple_expression, make_default_dict),
     "set": (v.is_simple_expression, make_default_set),
-    "generator": (v.validate_one_of(
-                    v.is_instance_of(ast.List),
-                    v.is_instance_of(ast.Set),
-                    v.is_instance_of(ast.Dict),
-                ), make_default_generator),
+    "generator": (v.is_simple_expression, make_default_generator),
  }
 
