@@ -77,4 +77,5 @@ ca makes a names expression (a := b)
 ct makes a tuple
 cv makes a variable
 cd makes a dictionary
+cg makes a set
 ```

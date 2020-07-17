@@ -502,8 +502,19 @@ def make_default_dict(cursor_trail, tree):
     return ast.Dict(keys=[ast.Name(id="key", ctx=ast.Load())], values=[expr])
 
 
+def make_default_set(cursor_trail, tree):
+    """Set(expr* elts)
+    """
+
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+
+    return ast.Set(elts=[expr])
+
+
 # Those actions return different nodes depending on the context
-dependent_actions = ["async", "list", "call", "attribute", "named_expression", "tuple", "name", "not", "usub", "invert", "dict"]
+dependent_actions = ["async", "list", "call", "attribute", "named_expression",
+                    "tuple", "name", "not", "usub", "invert", "dict", "set"]
 
 # Those actions need user input
 user_input_actions = ["string"]
@@ -576,5 +587,6 @@ nodes = {
     "invert": (v.is_simple_expression, make_default_invert),
     "usub": (v.is_simple_expression, make_default_usub),
     "dict": (v.is_simple_expression, make_default_dict),
+    "set": (v.is_simple_expression, make_default_set),
  }
 

@@ -72,6 +72,7 @@ command! -buffer -nargs=0 MakeNamedExpression exec 'py3 act("make_named_expressi
 command! -buffer -nargs=0 MakeTuple exec 'py3 act("make_tuple")'
 command! -buffer -nargs=0 MakeName exec 'py3 act("make_name")'
 command! -buffer -nargs=0 MakeDict exec 'py3 act("make_dict")'
+command! -buffer -nargs=0 MakeSet exec 'py3 act("make_set")'
 
 nnoremap <buffer> s :Save<Enter>
 nnoremap <buffer> h :CursorLeft<Enter>
@@ -148,4 +149,6 @@ nnoremap <buffer> ct :MakeTuple<Enter>
 " v stands for variable
 nnoremap <buffer> cv :MakeName<Enter>
 nnoremap <buffer> cd :MakeDict<Enter>
+" g stands for group (not quite a set but good enough)
+nnoremap <buffer> cg :MakeSet<Enter>
 
