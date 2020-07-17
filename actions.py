@@ -11,8 +11,6 @@ import validators
 # TODO: Copy and paste
 # TODO: Remove the current attr (Go back one)
 # TODO: Have a blank line on top of for and while
-# TODO: Prevent the user from making assignment expressions with tuples
-# Or make the tests good enough to find such problems
 
 def is_renameable(node):
     return (   hasattr(node, "id")
