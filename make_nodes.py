@@ -326,6 +326,11 @@ def make_async(cursor_trail, tree):
                 type_comment = definition.type_comment
             )
 
+    if isinstance(definition, ast.comprehension):
+        # Toggle the async
+        definition.is_async = 0 if definition.is_async == 1 else 1
+        return definition
+
 
 def make_defaul_try():
     """Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)"""
@@ -546,7 +551,6 @@ def make_default_comprehension():
             iter=ast.Name(id="iterable", ctx=ast.Load()),
             # TODO: Make the extend command add something to the ifs
             ifs=[],
-            # TODO: Make the async command toggle this
             is_async=0,
             )
     
@@ -592,6 +596,7 @@ nodes = {
                 v.is_instance_of(ast.FunctionDef),
                 v.is_instance_of(ast.AsyncFunctionDef),
                 v.is_instance_of(ast.AsyncWith),
+                v.is_instance_of(ast.comprehension),
                 v.validate_both(
                     v.is_within(ast.AsyncFunctionDef),
                     v.is_instance_of(ast.With)
