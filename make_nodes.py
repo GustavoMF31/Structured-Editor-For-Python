@@ -547,9 +547,8 @@ def make_default_comprehension():
     """comprehension = (expr target, expr iter, expr* ifs, int is_async)"""
 
     return ast.comprehension(
-            target=make_default_expression(),
+            target=make_default_expression(ctx=ast.Store()),
             iter=ast.Name(id="iterable", ctx=ast.Load()),
-            # TODO: Make the extend command add something to the ifs
             ifs=[],
             is_async=0,
             )

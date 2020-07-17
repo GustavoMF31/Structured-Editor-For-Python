@@ -381,6 +381,7 @@ def extend(cursor_trail, tree, _):
     # Assert -> Add the message
     # Import -> ImportFrom
     # alias -> add an asname (Which is kind of the whole point of the alias node)
+    # comprehension -> add an if clause
 
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
 
@@ -446,6 +447,13 @@ def extend(cursor_trail, tree, _):
             selected_node.asname = "alias"
         else: 
             selected_node.asname = None
+    
+    elif isinstance(selected_node, ast.comprehension):
+        # Toggle the if clause
+        if selected_node.ifs == []:
+            selected_node.ifs = [make_nodes.make_default_expression()]
+        else: 
+            selected_node.ifs = []
 
     else:
         # TODO: Change all of the "this node" to the node's class
