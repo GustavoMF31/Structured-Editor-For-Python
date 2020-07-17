@@ -5,8 +5,6 @@ import validators as v
 # The python 3.8 abstract grammar can be found at:
 # https://docs.python.org/3/library/ast.html#abstract-grammar
 
-# TODO: Get rid of all this make_default_thing in favor of just make_thing
-
 def make_node(node_name):
 
     def action(cursor_trail, tree,  get_user_input):
@@ -45,7 +43,7 @@ def make_node(node_name):
     return (action, False)
 
 
-def make_default_class():
+def make_class():
     """ClassDef(identifier name,
              expr* bases,
              keyword* keywords,
@@ -56,12 +54,12 @@ def make_default_class():
                 name = "NewClass",
                 bases = [],
                 keywords = [],
-                body = [make_default_statement()],
+                body = [make_statement()],
                 decorator_list = [],
             )
 
 
-def make_default_function():
+def make_function():
     """FunctionDef(identifier name, arguments args,
                        stmt* body, expr* decorator_list, expr? returns,
                        string? type_comment)"""
@@ -69,8 +67,8 @@ def make_default_function():
 
     function_definition = ast.FunctionDef(
                 name = "new_function",
-                args = make_default_arguments(),
-                body = [make_default_statement()],
+                args = make_arguments(),
+                body = [make_statement()],
                 decorator_list = [],
                 returns = None,
                 type_comment = None
@@ -80,68 +78,68 @@ def make_default_function():
     return function_definition
 
 
-def make_default_import():
+def make_import():
     """Import(alias* names)"""
 
-    return ast.Import(names=[make_default_alias()])
+    return ast.Import(names=[make_alias()])
 
 
 # TODO: Not have the else branch by default
-def make_default_for():
+def make_for():
     """For(expr target, expr iter, stmt* body, stmt* orelse, string? type_comment)"""
     
     return ast.For(
-            target = make_default_expression(ctx=ast.Store()),
-            iter =  make_default_expression(),
-            body = [make_default_statement()],
+            target = make_expression(ctx=ast.Store()),
+            iter =  make_expression(),
+            body = [make_statement()],
             # TODO: Add a way of creating the orelse
             orelse = [],
             type_comment = None
         )
 
 
-def make_default_while():
+def make_while():
     """While(expr test, stmt* body, stmt* orelse)"""
 
     return ast.While(
-        test = make_default_expression(),
-        body = [make_default_statement()],
+        test = make_expression(),
+        body = [make_statement()],
         orelse = []
     )
 
 
-def make_default_return():
-    return ast.Return(value=make_default_expression())
+def make_return():
+    return ast.Return(value=make_expression())
 
 
-def make_default_assign():
+def make_assign():
     """Assign(expr* targets, expr value, string? type_comment)j"""
 
     return ast.Assign(
             targets=[ast.Name(id="x", ctx=ast.Store())],
-            value = make_default_expression(),
+            value = make_expression(),
             type_comment = None
             )
 
 
-def make_default_if():
+def make_if():
     """If(expr test, stmt* body, stmt* orelse)"""
 
     return ast.If(
-            test=make_default_expression(),
-            body = [make_default_statement()],
+            test=make_expression(),
+            body = [make_statement()],
             orelse = []
             )
 
 
-def make_default_delete():
+def make_delete():
     """Delete(expr* targets)"""
     
     return ast.Delete(
                 targets=[ast.Name(id="var", ctx=ast.Del())]
             )
 
-def make_default_with():
+def make_with():
     """With(withitem* items, stmt* body, string? type_comment)"""
     """withitem = (expr context_expr, expr? optional_vars)"""
     
@@ -160,12 +158,12 @@ def make_default_with():
                 )
             ],
 
-            body = [make_default_statement()],
+            body = [make_statement()],
             type_comment = None,
         )
 
 
-def make_default_raise():
+def make_raise():
     """Raise(expr? exc, expr? cause)"""
 
     return ast.Raise(
@@ -176,7 +174,7 @@ def make_default_raise():
             )
 
 
-def make_default_attribute(cursor_trail, tree):
+def make_attribute(cursor_trail, tree):
     """Attribute(expr value, identifier attr, expr_context ctx)"""
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
 
@@ -196,7 +194,7 @@ def make_default_attribute(cursor_trail, tree):
     return generated_attribute
 
 
-def make_default_call(cursor_trail, tree):
+def make_call(cursor_trail, tree):
     """Call(expr func, expr* args, keyword* keywords)"""
 
     expr = core_logic.get_node_at_cursor(cursor_trail, tree)
@@ -210,7 +208,7 @@ def make_default_call(cursor_trail, tree):
 
 
 # TODO: Have the left side default to the selected expression
-def make_default_bin_op(left=None, right=None):
+def make_bin_op(left=None, right=None):
     if left is None:
         left = ast.Name(id="x", ctx=ast.Load())
 
@@ -225,30 +223,30 @@ def make_default_bin_op(left=None, right=None):
             )
 
 
-def make_default_lambda():
+def make_lambda():
     """Lambda(arguments args, expr body)"""
 
     return ast.Lambda(
-            args=make_default_arguments(),
-            body=make_default_expression()
+            args=make_arguments(),
+            body=make_expression()
             )
 
 
-def make_default_if_expression():
+def make_if_expression():
     """IfExp(expr test, expr body, expr orelse)"""
 
     return ast.IfExp(
-            test=make_default_expression(),
-            body=make_default_expression(),
-            orelse=make_default_expression()
+            test=make_expression(),
+            body=make_expression(),
+            orelse=make_expression()
             )
 
 
-def make_default_named_expression(cursor_trail, tree):
+def make_named_expression(cursor_trail, tree):
     """NamedExpr(expr target, expr value)"""
     
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
-    selected_expr = selected_expr if isinstance(selected_expr, ast.expr) else make_default_expression()
+    selected_expr = selected_expr if isinstance(selected_expr, ast.expr) else make_expression()
 
     return ast.NamedExpr(
             target=ast.Name(id="x", ctx=ast.Store()),
@@ -256,23 +254,23 @@ def make_default_named_expression(cursor_trail, tree):
             )
 
 
-def make_default_expression(ctx=None):
+def make_expression(ctx=None):
     if ctx is None:
         ctx = ast.Load()
 
     return ast.Name(id="n", ctx=ctx)
 
 
-def make_default_statement():
+def make_statement():
     return ast.Pass()
 
 
-def make_default_arg():
+def make_arg():
     """arg = (identifier arg, expr? annotation, string? type_comment)"""
     return ast.arg(arg="x", annotation=None, type_comment=None)
 
 
-def make_default_arguments():
+def make_arguments():
     return ast.arguments(
             posonlyargs=[],
             args=[],
@@ -284,7 +282,7 @@ def make_default_arguments():
         )
 
 
-def make_default_alias(default_name="module", default_asname=None):
+def make_alias(default_name="module", default_asname=None):
     return ast.alias(name=default_name, asname=default_asname)
 
 
@@ -332,12 +330,12 @@ def make_async(cursor_trail, tree):
         return definition
 
 
-def make_defaul_try():
+def make_try():
     """Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)"""
     
     return ast.Try(
             body=[ast.Pass()],
-            handlers=[make_default_exception_handler()],
+            handlers=[make_exception_handler()],
             # The else and the finally are not that common
             # let's not include them by default
             orelse=[],
@@ -347,7 +345,7 @@ def make_defaul_try():
             )
 
 
-def make_default_exception_handler():
+def make_exception_handler():
     """excepthandler = ExceptHandler(expr? type, identifier? name, stmt* body)"""
 
     # The ast module has it capitalized for some reason
@@ -358,33 +356,33 @@ def make_default_exception_handler():
             )
 
 
-def make_default_assert():
+def make_assert():
     """Assert(expr test, expr? msg)"""
 
     return ast.Assert(test=ast.Name(id="test", ctx=ast.Load()), msg=None)
 
     
-def make_default_global():
+def make_global():
     """Global(identifier* names)"""
 
     return ast.Global(names=["global_var"])
 
 
-def make_default_pass():
+def make_pass():
     return ast.Pass()
 
 
 
-def make_default_break():
+def make_break():
     return ast.Break()
 
 
 
-def make_default_continue():
+def make_continue():
     return ast.Continue()
 
 
-def make_default_tuple(cursor_trail, tree):
+def make_tuple(cursor_trail, tree):
     """Tuple(expr* elts, expr_context ctx)"""
 
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
@@ -401,7 +399,7 @@ def make_default_tuple(cursor_trail, tree):
     return created_tuple
 
 
-def make_default_list(cursor_trail, tree):
+def make_list(cursor_trail, tree):
     """List(expr* elts, expr_context ctx)"""
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
     parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
@@ -427,7 +425,7 @@ def recursively_fix_context(parent, node):
             recursively_fix_context(node, child)
 
 
-def make_default_name(cursor_trail, tree):
+def make_name(cursor_trail, tree):
     """Name(identifier id, expr_context ctx).
     This function must be dependent because of the context
     """
@@ -462,14 +460,14 @@ def get_context_for_child(parent, child):
     # (Just return None)
 
 
-def make_default_string(get_user_input):
+def make_string(get_user_input):
     string = get_user_input("str: ")
     return ast.Constant(value=string, kind=None)
 
 
-def make_default_not(cursor_trail, tree):
+def make_not(cursor_trail, tree):
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
-    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_expression()
 
     if isinstance(expr, ast.UnaryOp) and isinstance(expr.op, ast.Not):
         # Having not not x doesn't really make sense
@@ -479,16 +477,16 @@ def make_default_not(cursor_trail, tree):
     return ast.UnaryOp(op=ast.Not(), operand=expr)
         
 
-def make_default_invert(cursor_trail, tree):
+def make_invert(cursor_trail, tree):
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
-    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_expression()
 
     return ast.UnaryOp(op=ast.Invert(), operand=expr)
 
 
-def make_default_usub(cursor_trail, tree):
+def make_usub(cursor_trail, tree):
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
-    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_expression()
 
     if isinstance(expr, ast.UnaryOp) and isinstance(expr.op, ast.USub):
         # Having - - x doesn't really make sense
@@ -498,26 +496,26 @@ def make_default_usub(cursor_trail, tree):
     return ast.UnaryOp(op=ast.USub(), operand=expr)
 
 
-def make_default_dict(cursor_trail, tree):
+def make_dict(cursor_trail, tree):
     """Dict(expr* keys, expr* values)
     """
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
-    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_expression()
 
     return ast.Dict(keys=[ast.Name(id="key", ctx=ast.Load())], values=[expr])
 
 
-def make_default_set(cursor_trail, tree):
+def make_set(cursor_trail, tree):
     """Set(expr* elts)
     """
 
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
-    expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+    expr = selected_node if isinstance(selected_node, ast.expr) else make_expression()
 
     return ast.Set(elts=[expr])
 
 
-def make_default_generator(cursor_trail, tree):
+def make_generator(cursor_trail, tree):
     """ Makes a generator of the selected_expression 
     
     ListComp(expr elt, comprehension* generators)
@@ -542,19 +540,19 @@ def make_default_generator(cursor_trail, tree):
                 }
     else:
         comprehension = ast.GeneratorExp
-        expr = selected_node if isinstance(selected_node, ast.expr) else make_default_expression()
+        expr = selected_node if isinstance(selected_node, ast.expr) else make_expression()
 
         elts = {"elt": expr}
 
 
-    return comprehension(**elts, generators=[make_default_comprehension()])
+    return comprehension(**elts, generators=[make_comprehension()])
 
 
-def make_default_comprehension():
+def make_comprehension():
     """comprehension = (expr target, expr iter, expr* ifs, int is_async)"""
 
     return ast.comprehension(
-            target=make_default_expression(ctx=ast.Store()),
+            target=make_expression(ctx=ast.Store()),
             iter=ast.Name(id="iterable", ctx=ast.Load()),
             ifs=[],
             is_async=0,
@@ -571,33 +569,33 @@ user_input_actions = ["string"]
  
 nodes = {
     # "name" : (validator, creator)
-    "class": (v.is_instance_of(ast.stmt), make_default_class),
-    "function": (v.is_instance_of(ast.stmt), make_default_function),
-    "import": (v.is_instance_of(ast.stmt), make_default_import),
-    "if": (v.is_instance_of(ast.stmt), make_default_if),
-    "for": (v.is_instance_of(ast.stmt), make_default_for),
-    "while": (v.is_instance_of(ast.stmt), make_default_while),
+    "class": (v.is_instance_of(ast.stmt), make_class),
+    "function": (v.is_instance_of(ast.stmt), make_function),
+    "import": (v.is_instance_of(ast.stmt), make_import),
+    "if": (v.is_instance_of(ast.stmt), make_if),
+    "for": (v.is_instance_of(ast.stmt), make_for),
+    "while": (v.is_instance_of(ast.stmt), make_while),
     "return": (v.validate_both(
                 v.is_instance_of(ast.stmt),
                 v.validate_one_of(
                     v.is_within(ast.FunctionDef),
                     v.is_within(ast.AsyncFunctionDef)
                 )
-            ), make_default_return),
-    "assign": (v.is_instance_of(ast.stmt), make_default_assign),
-    "delete": (v.is_instance_of(ast.stmt), make_default_delete),
-    "with": (v.is_instance_of(ast.stmt), make_default_with),
+            ), make_return),
+    "assign": (v.is_instance_of(ast.stmt), make_assign),
+    "delete": (v.is_instance_of(ast.stmt), make_delete),
+    "with": (v.is_instance_of(ast.stmt), make_with),
     "raise": (v.validate_both(
                 v.is_instance_of(ast.stmt),
                 v.validate_one_of(
                     v.is_within(ast.FunctionDef),
                     v.is_within(ast.AsyncFunctionDef)
                 ),
-            ), make_default_raise),
+            ), make_raise),
     "call": (v.validate_one_of(
                 v.is_instance_of(ast.stmt),
                 v.is_simple_expression,
-        ), make_default_call),
+        ), make_call),
     "async": (v.validate_one_of(
                 v.is_instance_of(ast.FunctionDef),
                 v.is_instance_of(ast.AsyncFunctionDef),
@@ -608,37 +606,37 @@ nodes = {
                     v.is_instance_of(ast.With)
                 )
              ), make_async),
-    "try": (v.is_instance_of(ast.stmt), make_defaul_try),
-    "assert": (v.is_instance_of(ast.stmt), make_default_assert),
-    "global": (v.is_instance_of(ast.stmt), make_default_global),
-    "pass": (v.is_instance_of(ast.stmt), make_default_pass),
+    "try": (v.is_instance_of(ast.stmt), make_try),
+    "assert": (v.is_instance_of(ast.stmt), make_assert),
+    "global": (v.is_instance_of(ast.stmt), make_global),
+    "pass": (v.is_instance_of(ast.stmt), make_pass),
     "break": (v.validate_both(
                 v.is_instance_of(ast.stmt),
                 v.is_in_loop(),
-            ), make_default_break),
+            ), make_break),
     "continue":(v.validate_both(
                 v.is_instance_of(ast.stmt),
                 v.is_in_loop(),
-            ), make_default_continue),
-    "list": (v.is_instance_of(ast.expr), make_default_list),
-    "attribute": (v.is_instance_of(ast.expr), make_default_attribute),
-    "bin_op": (v.is_simple_expression, make_default_bin_op),
-    "string": (v.is_simple_expression, make_default_string),
-    "lambda": (v.is_simple_expression, make_default_lambda),
-    "if_exp": (v.is_simple_expression, make_default_if_expression),
-    "named_expression": (v.is_simple_expression, make_default_named_expression),
+            ), make_continue),
+    "list": (v.is_instance_of(ast.expr), make_list),
+    "attribute": (v.is_instance_of(ast.expr), make_attribute),
+    "bin_op": (v.is_simple_expression, make_bin_op),
+    "string": (v.is_simple_expression, make_string),
+    "lambda": (v.is_simple_expression, make_lambda),
+    "if_exp": (v.is_simple_expression, make_if_expression),
+    "named_expression": (v.is_simple_expression, make_named_expression),
     "tuple": (v.validate_both(
                 v.is_instance_of(ast.expr),
                 v.validate_not(
                     v.is_within_field(ast.AnnAssign, "target"),
                 ),
-            ), make_default_tuple),
-    "name": (v.is_instance_of(ast.expr), make_default_name),
-    "not": (v.is_simple_expression, make_default_not),
-    "invert": (v.is_simple_expression, make_default_invert),
-    "usub": (v.is_simple_expression, make_default_usub),
-    "dict": (v.is_simple_expression, make_default_dict),
-    "set": (v.is_simple_expression, make_default_set),
-    "generator": (v.is_simple_expression, make_default_generator),
+            ), make_tuple),
+    "name": (v.is_instance_of(ast.expr), make_name),
+    "not": (v.is_simple_expression, make_not),
+    "invert": (v.is_simple_expression, make_invert),
+    "usub": (v.is_simple_expression, make_usub),
+    "dict": (v.is_simple_expression, make_dict),
+    "set": (v.is_simple_expression, make_set),
+    "generator": (v.is_simple_expression, make_generator),
  }
 

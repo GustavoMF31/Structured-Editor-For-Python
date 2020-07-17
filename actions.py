@@ -174,7 +174,7 @@ def insert(cursor_trail, tree, _):
 
     elif isinstance(selected_node, ast.arguments):
 
-        arg = make_nodes.make_default_arg()
+        arg = make_nodes.make_arg()
 
         # Make the name unique
         arg.arg = core_logic.get_unique_name(arg.arg, selected_node)
@@ -186,13 +186,13 @@ def insert(cursor_trail, tree, _):
     # That's different from function definitions, where it's a list of arguments
     # The grammar is really confusing when it comes to those "args"
     elif isinstance(selected_node, ast.Call):
-        arg = make_nodes.make_default_expression()
+        arg = make_nodes.make_expression()
         selected_node.args.append(arg)
         return [0]
 
     elif hasattr(selected_node, "elts"):
         ctx = core_logic.get_immediate_context(cursor_trail, tree)
-        selected_node.elts.append(make_nodes.make_default_expression(ctx=ctx))
+        selected_node.elts.append(make_nodes.make_expression(ctx=ctx))
 
         return [-1]
 
@@ -329,7 +329,7 @@ def insert_annotation(cursor_trail, tree, _):
 
         assign = ast.Assign(
                 targets=[selected_node.target],
-                value = value if value is not None else make_node.make_default_expression()
+                value = value if value is not None else make_node.make_expression()
                 )
 
         core_logic.set_node_at_cursor(cursor_trail, tree, assign)
@@ -423,7 +423,7 @@ def extend(cursor_trail, tree, _):
         # TODO: Break up an import as a bunch of ImportFrom instead of losing info
         # by just creating a single one
         new_names = selected_node.names
-        new_names = [make_nodes.make_default_alias()] if new_names == [] else selected_node.names
+        new_names = [make_nodes.make_alias()] if new_names == [] else selected_node.names
 
         new_import = ast.ImportFrom(
                 module = selected_node.names[0].name,
@@ -451,7 +451,7 @@ def extend(cursor_trail, tree, _):
     elif isinstance(selected_node, ast.comprehension):
         # Toggle the if clause
         if selected_node.ifs == []:
-            selected_node.ifs = [make_nodes.make_default_expression()]
+            selected_node.ifs = [make_nodes.make_expression()]
         else: 
             selected_node.ifs = []
 
