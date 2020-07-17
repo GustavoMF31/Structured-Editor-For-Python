@@ -23,6 +23,8 @@ def cursor_highlighter_of(ast_node):
 
     # TODO: Find out why docstrings, when selected, become single quoted
     # TODO: The f strings look weird
+    # TODO: Empty sets become {1}.__class__
+    # TODO: The starting cursor appears twice when selecting a comprehension
     class CursorHighlighter(astor.SourceGenerator):
         
         cursor_start = "<<<"

@@ -78,4 +78,5 @@ ct makes a tuple
 cv makes a variable
 cd makes a dictionary
 cg makes a set
+ci makes a dict, list, or set into the corresponding generator
 ```

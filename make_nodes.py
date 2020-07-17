@@ -512,13 +512,53 @@ def make_default_set(cursor_trail, tree):
     return ast.Set(elts=[expr])
 
 
+def make_default_generator(cursor_trail, tree):
+    """ Makes a generator of the selected_expression 
+    
+    ListComp(expr elt, comprehension* generators)
+    SetComp(expr elt, comprehension* generators)
+    DictComp(expr key, expr value, comprehension* generators)
+    """
+
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+    if isinstance(selected_node, ast.List):
+        comprehension = ast.ListComp
+        elts = {"elt": selected_node.elts[0]}
+
+    elif isinstance(selected_node, ast.Set):
+        comprehension = ast.SetComp
+        elts = {"elt": selected_node.elts[0]}
+
+    elif isinstance(selected_node, ast.Dict):
+        comprehension = ast.DictComp
+        elts = {"key": selected_node.keys[0],
+                "value": selected_node.values[0]
+                }
+
+    return comprehension(**elts, generators=[make_default_comprehension()])
+
+
+def make_default_comprehension():
+    """comprehension = (expr target, expr iter, expr* ifs, int is_async)"""
+
+    return ast.comprehension(
+            target=make_default_expression(),
+            iter=ast.Name(id="iterable", ctx=ast.Load()),
+            # TODO: Make the extend command add something to the ifs
+            ifs=[],
+            # TODO: Make the async command toggle this
+            is_async=0,
+            )
+    
+
 # Those actions return different nodes depending on the context
 dependent_actions = ["async", "list", "call", "attribute", "named_expression",
-                    "tuple", "name", "not", "usub", "invert", "dict", "set"]
+                    "tuple", "name", "not", "usub", "invert", "dict", "set",
+                    "generator"]
 
 # Those actions need user input
 user_input_actions = ["string"]
-#
+ 
 nodes = {
     # "name" : (validator, creator)
     "class": (v.is_instance_of(ast.stmt), make_default_class),
@@ -588,5 +628,10 @@ nodes = {
     "usub": (v.is_simple_expression, make_default_usub),
     "dict": (v.is_simple_expression, make_default_dict),
     "set": (v.is_simple_expression, make_default_set),
+    "generator": (v.validate_one_of(
+                    v.is_instance_of(ast.List),
+                    v.is_instance_of(ast.Set),
+                    v.is_instance_of(ast.Dict),
+                ), make_default_generator),
  }
 
