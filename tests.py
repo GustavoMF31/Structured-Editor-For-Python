@@ -38,9 +38,13 @@ list_of_action_names_strategy = list_of_action_names_strategy.map(lambda l : ["c
 
 
 # TODO: Fail tests that raise syntax warnings
-@settings(max_examples=3000)
-#@settings(max_examples=60000)
-#@settings(max_examples=234256)
+
+# Increase the deadline for test time a bit,
+# I've gotten "Unreliable test timings!" when running tests for a long time
+@settings(max_examples=3000, deadline=500)
+#@settings(max_examples=60000, deadline=500)
+#@settings(max_examples=234256, deadline=500)
+
 @given(st.builds(deepcopy, st.sampled_from(trees)), list_of_action_names_strategy)
 @example(deepcopy(trees[0]), [
     'cursor_down',
