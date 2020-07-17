@@ -112,6 +112,7 @@ def core_is_within(cursor_trail, tree, ast_node_type):
             or core_is_within(cursor_trail[:-1], tree, ast_node_type)
             )
 
+
 def core_is_within_field(cursor_trail, tree, ast_node_type, fieldname): 
     """ Checks if the selected node is within a specific field of a
     parent of the specified type

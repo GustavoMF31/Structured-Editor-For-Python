@@ -87,6 +87,14 @@ def validate_all_of(*list_of_validators):
     return validate
 
 
+def validate_not(validator):
+    """Negates the validator"""
+    def negated(*args, **kwargs):
+        return not validator(*args, **kwargs)
+
+    return negated
+
+
 def is_in_loop():
     # TODO: Maybe the async variants work too?
     return validate_one_of(

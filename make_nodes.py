@@ -260,7 +260,7 @@ def make_default_expression(ctx=None):
     if ctx is None:
         ctx = ast.Load()
 
-    return ast.Name(id="None", ctx=ctx)
+    return ast.Name(id="n", ctx=ctx)
 
 
 def make_default_statement():
@@ -565,7 +565,12 @@ nodes = {
     "lambda": (v.is_simple_expression, make_default_lambda),
     "if_exp": (v.is_simple_expression, make_default_if_expression),
     "named_expression": (v.is_simple_expression, make_default_named_expression),
-    "tuple": (v.is_instance_of(ast.expr), make_default_tuple),
+    "tuple": (v.validate_both(
+                v.is_instance_of(ast.expr),
+                v.validate_not(
+                    v.is_within_field(ast.AnnAssign, "target"),
+                ),
+            ), make_default_tuple),
     "name": (v.is_instance_of(ast.expr), make_default_name),
     "not": (v.is_simple_expression, make_default_not),
     "invert": (v.is_simple_expression, make_default_invert),
