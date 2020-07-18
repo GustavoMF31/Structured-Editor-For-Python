@@ -74,6 +74,7 @@ command! -buffer -nargs=0 MakeName exec 'py3 act("make_name")'
 command! -buffer -nargs=0 MakeDict exec 'py3 act("make_dict")'
 command! -buffer -nargs=0 MakeSet exec 'py3 act("make_set")'
 command! -buffer -nargs=0 MakeGenerator exec 'py3 act("make_generator")'
+command! -buffer -nargs=0 MakeAwait exec 'py3 act("make_await")'
 
 nnoremap <buffer> s :Save<Enter>
 nnoremap <buffer> h :CursorLeft<Enter>
@@ -153,4 +154,5 @@ nnoremap <buffer> cd :MakeDict<Enter>
 " g stands for group (not quite a set but good enough)
 nnoremap <buffer> cg :MakeSet<Enter>
 nnoremap <buffer> ci :MakeGenerator<Enter>
+nnoremap <buffer> cw :MakeAwait<Enter>
 
