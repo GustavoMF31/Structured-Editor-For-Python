@@ -9,7 +9,6 @@ let g:path = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/main.py'
 
 execute 'py3file ' . g:path
 
-
 command! -buffer -nargs=0 CursorDown exec 'py3 act("cursor_down")'
 command! -buffer -nargs=0 CursorUp exec 'py3 act("cursor_up")'
 command! -buffer -nargs=0 CursorLeft exec 'py3 act("cursor_left")'
@@ -75,6 +74,7 @@ command! -buffer -nargs=0 MakeDict exec 'py3 act("make_dict")'
 command! -buffer -nargs=0 MakeSet exec 'py3 act("make_set")'
 command! -buffer -nargs=0 MakeGenerator exec 'py3 act("make_generator")'
 command! -buffer -nargs=0 MakeAwait exec 'py3 act("make_await")'
+command! -buffer -nargs=0 MakeYield exec 'py3 act("make_yield")'
 
 nnoremap <buffer> s :Save<Enter>
 nnoremap <buffer> h :CursorLeft<Enter>
@@ -155,4 +155,5 @@ nnoremap <buffer> cd :MakeDict<Enter>
 nnoremap <buffer> cg :MakeSet<Enter>
 nnoremap <buffer> ci :MakeGenerator<Enter>
 nnoremap <buffer> cw :MakeAwait<Enter>
+nnoremap <buffer> cy :MakeYield<Enter>
 

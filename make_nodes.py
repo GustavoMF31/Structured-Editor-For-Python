@@ -566,6 +566,12 @@ def make_await():
     return ast.Await(value=make_expression())
 
 
+def make_yield():
+    """Yield(expr? value)"""
+
+    return ast.Yield(value=make_expression())
+
+
 # Those actions return different nodes depending on the context
 dependent_actions = ["async", "list", "call", "attribute", "named_expression",
                     "tuple", "name", "not", "usub", "invert", "dict", "set",
@@ -645,10 +651,15 @@ nodes = {
     "dict": (v.is_simple_expression, make_dict),
     "set": (v.is_simple_expression, make_set),
     "generator": (v.is_simple_expression, make_generator),
+
+    # TODO: Validate is within expression or statement
     "await": (v.validate_one_of(
-        # TODO: Validate is within expression or statement
                     v.is_within(ast.FunctionDef),
                     v.is_within(ast.AsyncFunctionDef)
                 ), make_await),
+    "yield": (v.validate_one_of(
+                    v.is_within(ast.FunctionDef),
+                    v.is_within(ast.AsyncFunctionDef)
+                ), make_yield),
  }
 
