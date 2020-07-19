@@ -11,7 +11,7 @@ def to_operation(new_operation):
 
         # Compare -> BinOp
         if isinstance(selected_node, ast.Compare):
-            selected_node = make_nodes.make_default_bin_op(
+            selected_node = make_nodes.make_bin_op(
                     left=selected_node.left,
                     right=selected_node.comparators[0],
                     )
@@ -20,7 +20,7 @@ def to_operation(new_operation):
 
         # BoolOp -> BinOp
         elif isinstance(selected_node, ast.BoolOp):
-            selected_node = make_nodes.make_default_bin_op(
+            selected_node = make_nodes.make_bin_op(
                     left=selected_node.values[0],
                     right=selected_node.values[1],
                     )
