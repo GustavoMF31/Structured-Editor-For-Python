@@ -117,3 +117,11 @@ is_simple_expression = validate_all_of(
                             is_not_in_context(ast.Del),
                           )
 
+
+simple_expression_within_function = validate_all_of(
+    is_simple_expression,
+    validate_one_of(
+        is_within(ast.FunctionDef),
+        is_within(ast.AsyncFunctionDef)
+    ),
+ )
