@@ -372,10 +372,8 @@ def make_pass():
     return ast.Pass()
 
 
-
 def make_break():
     return ast.Break()
-
 
 
 def make_continue():
@@ -413,6 +411,32 @@ def make_list(cursor_trail, tree):
     recursively_fix_context(created_list, selected_expr)
 
     return created_list
+
+
+def make_subscript(cursor_trail, tree):
+    """Subscript(expr value, slice slice, expr_context ctx)"""
+
+    selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
+    parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
+
+    # Steal the ctx from the node that was already here
+    # Default to Load
+    ctx = getattr(selected_expr, "ctx", ast.Load())
+
+    subscript = ast.Subscript(value=selected_expr, slice=make_slice(), ctx=ctx)
+    recursively_fix_context(subscript, selected_expr)
+
+    return subscript
+
+
+def make_slice():
+    """slice = Slice(expr? lower, expr? upper, expr? step)
+          | ExtSlice(slice* dims)
+          | Index(expr value)
+    """
+    # TODO: Have the extend action "move" between these types
+
+    return ast.Index(value=ast.Constant(value=0))
 
 
 def recursively_fix_context(parent, node):
@@ -581,7 +605,7 @@ def make_yield_from():
 # Those actions return different nodes depending on the context
 dependent_actions = ["async", "list", "call", "attribute", "named_expression",
                     "tuple", "name", "not", "usub", "invert", "dict", "set",
-                    "generator"]
+                    "generator", "subscript"]
 
 # Those actions need user input
 user_input_actions = ["string"]
@@ -637,6 +661,7 @@ nodes = {
                 v.is_instance_of(ast.stmt),
                 v.is_in_loop(),
             ), make_continue),
+    # TODO: Allow lists in place of statements
     "list": (v.is_instance_of(ast.expr), make_list),
     "attribute": (v.is_instance_of(ast.expr), make_attribute),
     "bin_op": (v.is_simple_expression, make_bin_op),
@@ -660,5 +685,7 @@ nodes = {
     "await": (v.simple_expression_within_function, make_await),
     "yield": (v.simple_expression_within_function, make_yield),
     "yield_from": (v.simple_expression_within_function, make_yield_from),
+    # TODO: Abstract the common logic of all the assignable expressions
+    "subscript": (v.is_instance_of(ast.expr), make_subscript),
  }
 

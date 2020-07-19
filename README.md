@@ -81,4 +81,5 @@ cg makes a set
 ci makes a dict, list, or set into the corresponding generator
 cy makes a yield expression
 ce makes a yield from
+c[ makes a subscript (x[0] for example)
 ```

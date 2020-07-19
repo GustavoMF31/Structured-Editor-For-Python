@@ -76,6 +76,7 @@ command! -buffer -nargs=0 MakeGenerator exec 'py3 act("make_generator")'
 command! -buffer -nargs=0 MakeAwait exec 'py3 act("make_await")'
 command! -buffer -nargs=0 MakeYield exec 'py3 act("make_yield")'
 command! -buffer -nargs=0 MakeYieldFrom exec 'py3 act("make_yield_from")'
+command! -buffer -nargs=0 MakeSubscript exec 'py3 act("make_subscript")'
 
 nnoremap <buffer> s :Save<Enter>
 nnoremap <buffer> h :CursorLeft<Enter>
@@ -102,9 +103,6 @@ nnoremap <buffer> ~ :MakeInvert<Enter>
 " TODO: Move the ++ and -- behavior to the + and - keys
 " nnoremap <buffer> ++ :MakeUAdd<Enter>
 nnoremap <buffer> -- :MakeUSub<Enter>
-" b stands for "be", (so it IS something)
-nnoremap <buffer> cb :Is<Enter>
-nnoremap <buffer> cn :In<Enter>
 
 " TODO: Is this Actions comment in the right place?
 " Actions
@@ -138,6 +136,9 @@ nnoremap <buffer> vs :MakeGlobal<Enter>
 nnoremap <buffer> vv :MakePass<Enter>
 nnoremap <buffer> vb :MakeBreak<Enter>
 nnoremap <buffer> vk :MakeContinue<Enter>
+" b stands for "be", (so it IS something)
+nnoremap <buffer> cb :Is<Enter>
+nnoremap <buffer> cn :In<Enter>
 " c for expressions
 nnoremap <buffer> cl :MakeList<Enter>
 nnoremap <buffer> cc :MakeCall<Enter>
@@ -158,4 +159,5 @@ nnoremap <buffer> ci :MakeGenerator<Enter>
 nnoremap <buffer> cw :MakeAwait<Enter>
 nnoremap <buffer> cy :MakeYield<Enter>
 nnoremap <buffer> ce :MakeYieldFrom<Enter>
+nnoremap <buffer> c[ :MakeSubscript<Enter>
 
