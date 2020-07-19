@@ -155,7 +155,7 @@ nnoremap <buffer> cv :MakeName<Enter>
 nnoremap <buffer> cd :MakeDict<Enter>
 " g stands for group (not quite a set but good enough)
 nnoremap <buffer> cg :MakeSet<Enter>
-nnoremap <buffer> ci :MakeGenerator<Enter>
+nnoremap <buffer> cx :MakeGenerator<Enter>
 nnoremap <buffer> cw :MakeAwait<Enter>
 nnoremap <buffer> cy :MakeYield<Enter>
 nnoremap <buffer> ce :MakeYieldFrom<Enter>
