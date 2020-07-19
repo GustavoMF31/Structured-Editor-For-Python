@@ -572,6 +572,12 @@ def make_yield():
     return ast.Yield(value=make_expression())
 
 
+def make_yield_from():
+    """YieldFrom(expr value)"""
+
+    return ast.YieldFrom(value=make_expression())
+
+
 # Those actions return different nodes depending on the context
 dependent_actions = ["async", "list", "call", "attribute", "named_expression",
                     "tuple", "name", "not", "usub", "invert", "dict", "set",
@@ -653,5 +659,6 @@ nodes = {
     "generator": (v.is_simple_expression, make_generator),
     "await": (v.simple_expression_within_function, make_await),
     "yield": (v.simple_expression_within_function, make_yield),
+    "yield_from": (v.simple_expression_within_function, make_yield_from),
  }
 

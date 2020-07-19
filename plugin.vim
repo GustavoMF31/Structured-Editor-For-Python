@@ -75,6 +75,7 @@ command! -buffer -nargs=0 MakeSet exec 'py3 act("make_set")'
 command! -buffer -nargs=0 MakeGenerator exec 'py3 act("make_generator")'
 command! -buffer -nargs=0 MakeAwait exec 'py3 act("make_await")'
 command! -buffer -nargs=0 MakeYield exec 'py3 act("make_yield")'
+command! -buffer -nargs=0 MakeYieldFrom exec 'py3 act("make_yield_from")'
 
 nnoremap <buffer> s :Save<Enter>
 nnoremap <buffer> h :CursorLeft<Enter>
@@ -156,4 +157,5 @@ nnoremap <buffer> cg :MakeSet<Enter>
 nnoremap <buffer> ci :MakeGenerator<Enter>
 nnoremap <buffer> cw :MakeAwait<Enter>
 nnoremap <buffer> cy :MakeYield<Enter>
+nnoremap <buffer> ce :MakeYieldFrom<Enter>
 
