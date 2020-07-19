@@ -102,7 +102,6 @@ def is_in_loop():
             is_within_field(ast.While, "body")
             )
 
-
 # Validates that it's a simple expression
 # and that it's in a simple context (no assigning to it)
 is_simple_expression = validate_all_of(
@@ -116,6 +115,13 @@ is_simple_expression = validate_all_of(
                             is_not_in_context(ast.Param),
                             is_not_in_context(ast.Del),
                           )
+
+# TODO: Replace all of the validate_both with validate_all
+# For assignable expressions, any context goes
+is_assignable_expression = validate_one_of(
+    is_instance_of(ast.expr),
+    is_instance_of(ast.stmt)
+)
 
 
 simple_expression_within_function = validate_all_of(

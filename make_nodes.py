@@ -181,15 +181,19 @@ def make_attribute(cursor_trail, tree):
     # Get the context from the node that was already here
     ctx = getattr(selected_expr, "ctx", ast.Load())
 
+    # Make sure it's of the expr type (an not a statement)
+    selected_expr = selected_expr if isinstance(selected_expr, ast.expr) else None
+
     generated_attribute = ast.Attribute(
-            value=selected_expr, 
+            value=selected_expr if selected_expr is not None else make_expression(), 
             attr="attr",
             ctx=ctx
             )
 
-    # Set it's new context
-    # The funcion returns the class, so make an instance of it
-    recursively_fix_context(get_context_for_child, selected_expr)
+    # Set it's new context the child was an expression
+    if selected_expr is not None:
+        # The funcion returns the class, so make an instance of it
+        recursively_fix_context(get_context_for_child, selected_expr)
 
     return generated_attribute
 
@@ -390,9 +394,13 @@ def make_tuple(cursor_trail, tree):
     # Default to Load
     ctx = getattr(selected_expr, "ctx", ast.Load())
 
-    created_tuple = ast.Tuple(elts=[selected_expr], ctx=ctx) 
+    selected_expr = selected_expr if isinstance(selected_expr, ast.expr) else None
+    elts = [] if selected_expr is None else [selected_expr]
 
-    recursively_fix_context(created_tuple, selected_expr)
+    created_tuple = ast.Tuple(elts=elts, ctx=ctx) 
+
+    if selected_expr is not None: 
+        recursively_fix_context(created_tuple, selected_expr)
 
     return created_tuple
 
@@ -400,15 +408,18 @@ def make_tuple(cursor_trail, tree):
 def make_list(cursor_trail, tree):
     """List(expr* elts, expr_context ctx)"""
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
-    parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
 
     # Steal the ctx from the node that was already here
     # Default to Load
     ctx = getattr(selected_expr, "ctx", ast.Load())
 
-    created_list = ast.List(elts=[selected_expr], ctx=ctx) 
-    # Fix the contexts
-    recursively_fix_context(created_list, selected_expr)
+    selected_expr = selected_expr if isinstance(selected_expr, ast.expr) else None
+    elts = [] if selected_expr is None else [selected_expr]
+    created_list = ast.List(elts=elts, ctx=ctx) 
+
+    # If we have children, fix their contexts
+    if selected_expr is not None:
+        recursively_fix_context(created_list, selected_expr)
 
     return created_list
 
@@ -417,11 +428,11 @@ def make_subscript(cursor_trail, tree):
     """Subscript(expr value, slice slice, expr_context ctx)"""
 
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
-    parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
 
     # Steal the ctx from the node that was already here
     # Default to Load
     ctx = getattr(selected_expr, "ctx", ast.Load())
+    selected_expr = selected_expr if isinstance(selected_expr, ast.expr) else make_expression()
 
     subscript = ast.Subscript(value=selected_expr, slice=make_slice(), ctx=ctx)
     recursively_fix_context(subscript, selected_expr)
@@ -662,20 +673,20 @@ nodes = {
                 v.is_in_loop(),
             ), make_continue),
     # TODO: Allow lists in place of statements
-    "list": (v.is_instance_of(ast.expr), make_list),
-    "attribute": (v.is_instance_of(ast.expr), make_attribute),
+    "list": (v.is_assignable_expression, make_list),
+    "attribute": (v.is_assignable_expression, make_attribute),
     "bin_op": (v.is_simple_expression, make_bin_op),
     "string": (v.is_simple_expression, make_string),
     "lambda": (v.is_simple_expression, make_lambda),
     "if_exp": (v.is_simple_expression, make_if_expression),
     "named_expression": (v.is_simple_expression, make_named_expression),
     "tuple": (v.validate_both(
-                v.is_instance_of(ast.expr),
+                v.is_assignable_expression,
                 v.validate_not(
                     v.is_within_field(ast.AnnAssign, "target"),
                 ),
             ), make_tuple),
-    "name": (v.is_instance_of(ast.expr), make_name),
+    "name": (v.is_assignable_expression, make_name),
     "not": (v.is_simple_expression, make_not),
     "invert": (v.is_simple_expression, make_invert),
     "usub": (v.is_simple_expression, make_usub),
@@ -686,6 +697,6 @@ nodes = {
     "yield": (v.simple_expression_within_function, make_yield),
     "yield_from": (v.simple_expression_within_function, make_yield_from),
     # TODO: Abstract the common logic of all the assignable expressions
-    "subscript": (v.is_instance_of(ast.expr), make_subscript),
+    "subscript": (v.is_assignable_expression, make_subscript),
  }
 
