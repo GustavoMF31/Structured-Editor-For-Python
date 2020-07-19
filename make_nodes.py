@@ -651,15 +651,25 @@ nodes = {
     "dict": (v.is_simple_expression, make_dict),
     "set": (v.is_simple_expression, make_set),
     "generator": (v.is_simple_expression, make_generator),
-
-    # TODO: Validate is within expression or statement
-    "await": (v.validate_one_of(
+    "await": (v.validate_all_of(
+                v.validate_one_of(
+                    v.is_simple_expression,
+                    v.is_instance_of(ast.stmt)
+                ),
+                v.validate_one_of(
                     v.is_within(ast.FunctionDef),
                     v.is_within(ast.AsyncFunctionDef)
-                ), make_await),
-    "yield": (v.validate_one_of(
+                ),
+             ), make_await),
+    "yield": (v.validate_all_of(
+                v.validate_one_of(
+                    v.is_simple_expression,
+                    v.is_instance_of(ast.stmt)
+                ),
+                v.validate_one_of(
                     v.is_within(ast.FunctionDef),
                     v.is_within(ast.AsyncFunctionDef)
-                ), make_yield),
+                ),
+             ), make_yield),
  }
 
