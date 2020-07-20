@@ -562,16 +562,36 @@ def make_generator(cursor_trail, tree):
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
     if isinstance(selected_node, ast.List):
         comprehension = ast.ListComp
-        elts = {"elt": selected_node.elts[0]}
+
+        try:
+            elt = selected_node.elts[0]
+        except IndexError:
+            elt = make_expression()
+
+        elts = {"elt": elt} 
 
     elif isinstance(selected_node, ast.Set):
         comprehension = ast.SetComp
-        elts = {"elt": selected_node.elts[0]}
+
+        try:
+            elt = selected_node.elts[0]
+        except IndexError:
+            elt = make_expression()
+
+        elts = {"elt": elt} 
 
     elif isinstance(selected_node, ast.Dict):
         comprehension = ast.DictComp
-        elts = {"key": selected_node.keys[0],
-                "value": selected_node.values[0]
+
+        try:
+            key = selected_node.keys[0]
+            value = selected_node.values[0]
+        except IndexError:
+            key = make_expression()
+            value = make_expression()
+
+        elts = {"key": key, 
+                "value": value
                 }
     else:
         comprehension = ast.GeneratorExp
