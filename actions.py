@@ -376,13 +376,14 @@ def extend(cursor_trail, tree, _):
     # Function (Async too) -> add decorator
     # Class -> add decorator 
 
-    # TODO: Assign -> Augmented Assign
+    # Assign -> Augmented Assign
     # Raise -> Add the cause (as in "raise foo from bar")
     # Assert -> Add the message
     # Import -> ImportFrom
     # alias -> add an asname (Which is kind of the whole point of the alias node)
     # comprehension -> add an if clause
     # yield -> add the thing to yield
+    # Name -> starred
 
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
 
@@ -462,6 +463,23 @@ def extend(cursor_trail, tree, _):
             selected_node.value = make_nodes.make_expression()
         else: 
             selected_node.value = None
+
+    elif isinstance(selected_node, ast.Name):
+        # Make it into an ast.Starred
+        # TODO: Validate it's within an assignment
+        # TODO: Make starred's work for function params
+        starred = ast.Starred(
+                value = selected_node,
+                ctx = selected_node.ctx
+                )
+
+        core_logic.set_node_at_cursor(cursor_trail, tree, starred)
+
+    elif (isinstance(selected_node, ast.Starred)
+            and isinstance((name := selected_node.value), ast.Name)) :
+
+        # Change the node to be the name
+        core_logic.set_node_at_cursor(cursor_trail, tree, name)
 
     else:
         # TODO: Change all of the "this node" to the node's class
