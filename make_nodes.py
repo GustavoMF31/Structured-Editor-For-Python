@@ -672,7 +672,6 @@ nodes = {
                 v.is_instance_of(ast.stmt),
                 v.is_in_loop(),
             ), make_continue),
-    # TODO: Allow lists in place of statements
     "list": (v.is_assignable_expression, make_list),
     "attribute": (v.is_assignable_expression, make_attribute),
     "bin_op": (v.is_simple_expression, make_bin_op),
