@@ -118,9 +118,20 @@ is_simple_expression = validate_all_of(
 
 # TODO: Replace all of the validate_both with validate_all
 # For assignable expressions, any context goes
+# and they can't be assign
 is_assignable_expression = validate_one_of(
     is_instance_of(ast.expr),
-    is_instance_of(ast.stmt)
+    is_instance_of(ast.stmt),
+)
+
+
+# Those assignable expressions can't appear as targets of an annotated
+# assignment
+is_non_annotatable_assignable_expression = validate_all_of(
+    is_assignable_expression,
+    validate_not(
+        is_within_field(ast.AnnAssign, "target"),
+    ),
 )
 
 

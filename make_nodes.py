@@ -190,7 +190,7 @@ def make_attribute(cursor_trail, tree):
             ctx=ctx
             )
 
-    # Set it's new context the child was an expression
+    # Set it's new context if the child was an expression
     if selected_expr is not None:
         # The funcion returns the class, so make an instance of it
         recursively_fix_context(get_context_for_child, selected_expr)
@@ -692,19 +692,14 @@ nodes = {
                 v.is_instance_of(ast.stmt),
                 v.is_in_loop(),
             ), make_continue),
-    "list": (v.is_assignable_expression, make_list),
+    "list": (v.is_non_annotatable_assignable_expression, make_list),
     "attribute": (v.is_assignable_expression, make_attribute),
     "bin_op": (v.is_simple_expression, make_bin_op),
     "string": (v.is_simple_expression, make_string),
     "lambda": (v.is_simple_expression, make_lambda),
     "if_exp": (v.is_simple_expression, make_if_expression),
     "named_expression": (v.is_simple_expression, make_named_expression),
-    "tuple": (v.validate_both(
-                v.is_assignable_expression,
-                v.validate_not(
-                    v.is_within_field(ast.AnnAssign, "target"),
-                ),
-            ), make_tuple),
+    "tuple": (v.is_non_annotatable_assignable_expression, make_tuple),
     "name": (v.is_assignable_expression, make_name),
     "not": (v.is_simple_expression, make_not),
     "invert": (v.is_simple_expression, make_invert),
