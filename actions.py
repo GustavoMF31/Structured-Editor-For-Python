@@ -477,6 +477,12 @@ def extend(cursor_trail, tree, _):
             print("Can't have a starred variable outside of an assignment")
             return
 
+        assign_node = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
+
+        if len(assign_node.targets) <= 1:
+            print("A starred expression can't be alone in an assignment")
+            return
+
         # TODO: Make starred's work for function params
         starred = ast.Starred(
                 value = selected_node,
