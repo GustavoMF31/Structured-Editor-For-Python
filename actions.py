@@ -466,7 +466,17 @@ def extend(cursor_trail, tree, _):
 
     elif isinstance(selected_node, ast.Name):
         # Make it into an ast.Starred
-        # TODO: Validate it's within an assignment
+
+        if not core_logic.core_is_within_field(
+                cursor_trail,
+                tree,
+                ast.Assign,
+                "targets"
+                ):
+
+            print("Can't have a starred variable outside of an assignment")
+            return
+
         # TODO: Make starred's work for function params
         starred = ast.Starred(
                 value = selected_node,
