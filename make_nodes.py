@@ -178,6 +178,14 @@ def make_attribute(cursor_trail, tree):
     """Attribute(expr value, identifier attr, expr_context ctx)"""
     selected_expr = core_logic.get_node_at_cursor(cursor_trail, tree)
 
+    # In the case the parent is an annotated assignment,
+    # It must'nt have the "simple" tag
+    # TODO: Other annotatable and assignable expressions might need this too
+    parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
+    if isinstance(parent, ast.AnnAssign):
+        # TODO: Can we use False? (The grammar says int)
+        parent.simple = 0
+
     # Get the context from the node that was already here
     ctx = getattr(selected_expr, "ctx", ast.Load())
 
@@ -192,8 +200,7 @@ def make_attribute(cursor_trail, tree):
 
     # Set it's new context if the child was an expression
     if selected_expr is not None:
-        # The funcion returns the class, so make an instance of it
-        recursively_fix_context(get_context_for_child, selected_expr)
+        recursively_fix_context(generated_attribute, selected_expr)
 
     return generated_attribute
 
@@ -707,7 +714,10 @@ nodes = {
     "dict": (v.is_simple_expression, make_dict),
     "set": (v.is_simple_expression, make_set),
     "generator": (v.is_simple_expression, make_generator),
-    "await": (v.simple_expression_within_function, make_await),
+    "await": (v.validate_all_of(
+                v.is_simple_expression,
+                v.is_within(ast.AsyncFunctionDef),
+             ), make_await),
     "yield": (v.simple_expression_within_function, make_yield),
     "yield_from": (v.simple_expression_within_function, make_yield_from),
     # TODO: Abstract the common logic of all the assignable expressions
