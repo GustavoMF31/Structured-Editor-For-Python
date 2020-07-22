@@ -8,4 +8,5 @@
 Session.vim
 
 # file for testing the editor on
-dummy.py
+**/dummy.py
+
