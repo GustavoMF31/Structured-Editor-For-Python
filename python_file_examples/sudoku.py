@@ -1,4 +1,6 @@
 from copy import deepcopy
+import test, other_test as test2, z
+from foo import bar
 RENAMED = (v := 2)
 
 
