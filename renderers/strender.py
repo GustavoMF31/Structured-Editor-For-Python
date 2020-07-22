@@ -2,8 +2,16 @@ import ast
 
 SPACES_PER_INDENTATION_LEVEL = 4
 
+CURSOR_START = "<<<"
+CURSOR_END = ">>>"
 
-def render_view(tree, selected_node, window_width):
+# Having the selected_node as a global variable makes it so the
+# intermediate rendering functions don't have to worry about it
+# so I think the global variable is worth it
+selected_node = None
+def render_view(tree, new_selected_node, window_width):
+    global selected_node
+    selected_node = new_selected_node
     return render(tree, cols_left=window_width)
 
 
@@ -14,7 +22,12 @@ def render(node, indentation_spaces=0, cols_left=80):
     # indentation is how many levels indented the node should draw itself
     # cols-left is the amount of room it will have left on the line to draw itself
     # given that it will draw the indentation first
-    return render_function(node, indentation_spaces, cols_left)
+    rendered_node = render_function(node, indentation_spaces, cols_left)
+
+    if selected_node is node:
+        return CURSOR_START + rendered_node + CURSOR_END
+
+    return rendered_node
 
 
 def not_implemented_render(node, indentation, cols_left):
