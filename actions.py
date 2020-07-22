@@ -10,6 +10,12 @@ import validators
 # TODO: Call that calls a function !on! the selected expression
 # TODO: Remove the current attr (Go back one)
 # TODO: Have a blank line on top of for and while
+# TODO: Actions that replaces the parent with the selected node
+# (If the types match), or maybe yank, up, put does the job.
+# TODO: A way to paste from stack overflow
+# TODO: Have funcion application default to a single argument
+# TODO: A way of inserting None
+# TODO: Default values for function parameters
 
 def is_renameable(node):
     return (   hasattr(node, "id")
@@ -387,6 +393,7 @@ def extend(cursor_trail, tree, _):
     # comprehension -> add an if clause
     # yield -> add the thing to yield
     # Name -> starred
+    # Index -> Slice
 
     selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
 
@@ -499,6 +506,22 @@ def extend(cursor_trail, tree, _):
 
         # Change the node to be the name
         core_logic.set_node_at_cursor(cursor_trail, tree, name)
+    
+    elif isinstance(selected_node, ast.Index):
+        slice = ast.Slice(
+                lower=selected_node.value,
+                upper=make_nodes.make_expression(),
+                step=None
+                )
+
+        core_logic.set_node_at_cursor(cursor_trail, tree, slice)
+
+    elif isinstance(selected_node, ast.Slice):
+        index = ast.Index(
+                value=selected_node.lower,
+                )
+
+        core_logic.set_node_at_cursor(cursor_trail, tree, index)
 
     else:
         # TODO: Change all of the "this node" to the node's class

@@ -452,7 +452,6 @@ def make_slice():
           | ExtSlice(slice* dims)
           | Index(expr value)
     """
-    # TODO: Have the extend action "move" between these types
 
     return ast.Index(value=ast.Constant(value=0))
 
