@@ -16,6 +16,8 @@ import validators
 # TODO: Have funcion application default to a single argument
 # TODO: A way of inserting None
 # TODO: Default values for function parameters
+# TODO: Have a lambda use the selected expression as it's initial body
+# TODO: A way of inserting \n
 
 def is_renameable(node):
     return (   hasattr(node, "id")

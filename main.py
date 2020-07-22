@@ -20,34 +20,14 @@ from core_logic import *
 import actions
 import renderer
 
-# It's important to save the buffer because the currently selected buffer
-# might stop being the python code one
-# Useful info: https://vimhelp.org/if_pyth.txt.html#python-buffer
-buffer = vim.current.buffer
-filename = buffer.name
-
-# The original ast
-ast = ast.parse("\n".join(buffer[:]))
-
-# Set the initial action state dict
-# Stores stuff like the copy and pasted node
-ast.states_for_actions = {}
-
-# Set the initial view
-buffer[:] = renderer.render_view(ast, ast).split("\n")
-
-# Stores the path to the editing cursor
-# An int n means the nth child of the current node
-# n is used modulo the number of children, so negative number and huge
-# numbers are allowed (They will wrap around)
-cursor_trail = []
 
 def render_view_to_buffer():
     selected_node = get_node_at_cursor(cursor_trail, ast)
-    rendered_text = renderer.render_view(ast, selected_node)
+    rendered_text = renderer.render_view(ast, selected_node, adjust_width(window.width))
 
     # Write the text to the buffer
     buffer[:] = rendered_text.split("\n")
+
 
 def get_vim_input(message):
     vim.command("call inputsave()")
@@ -64,6 +44,16 @@ def save():
 
     with open(filename, "w", encoding="utf-8") as f:
         f.write(renderer.render_standard(ast))
+
+
+def adjust_width(window_width):
+    """Subtracts the width by 3 in case the numbers option is set,
+    because the line numbers takes 3 columns from the screen's space"""
+        
+    if vim.eval("&number") or vim.eval("&relativenumber"):
+        return window_width - 3
+
+    return window_width
 
 
 # Perform an action (A node modification)
@@ -85,4 +75,27 @@ def act(action_name):
 
     render_view_to_buffer()
 
+
+# It's important to save the buffer because the currently selected buffer
+# might stop being the python code one
+# Useful info: https://vimhelp.org/if_pyth.txt.html#python-buffer
+window = vim.current.window
+buffer = vim.current.buffer
+filename = buffer.name
+
+# The original ast
+ast = ast.parse("\n".join(buffer[:]))
+
+# Set the initial action state dict
+# Stores stuff like the copy and pasted node
+ast.states_for_actions = {}
+
+# Set the initial view
+buffer[:] = renderer.render_view(ast, ast, adjust_width(window.width)).split("\n")
+
+# Stores the path to the editing cursor
+# An int n means the nth child of the current node
+# n is used modulo the number of children, so negative number and huge
+# numbers are allowed (They will wrap around)
+cursor_trail = []
 

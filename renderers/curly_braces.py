@@ -3,7 +3,8 @@ import ast
 from .standard import cursor_highlighter_of
 
 
-def render_view(tree, node):
+def render_view(tree, node, _):
+    # Ignore the window width
 
     generator_class = curly_braces_python_of(tree)
     return astor.to_source(

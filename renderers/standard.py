@@ -3,7 +3,8 @@ import astor
 from core_logic import get_node_at_cursor
 
 
-def render_view(tree, selected_node):
+def render_view(tree, selected_node, _):
+    # Ignore thw window width, astor is not that smart
 
     generator_class = cursor_highlighter_of(selected_node)
     return astor.to_source(
