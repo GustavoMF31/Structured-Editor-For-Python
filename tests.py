@@ -17,6 +17,10 @@ files = map(lambda x : (x, open("python_file_examples/" + x, "r")), example_pyth
 # Keeps the name there and reads the file
 trees = list(map(lambda file : (file[0], ast.parse(file[1].read())), files))
 
+# Actions may have state kept within this dict that's mutated
+for name, tree in trees:
+    tree.states_for_actions = {}
+
 # Close the files
 [f.close() for (name, f) in files]
 
@@ -53,9 +57,6 @@ list_of_action_names_strategy = list_of_action_names_strategy.map(lambda l : ["c
      'make_bin_op', "make_not" ] 
      )
 def action_sequence_keeps_ast_valid(file, list_of_action_names):
-    # This function assumes the actions don't have local state
-    # Will likely break otherwise
-
     # Save the name for better error messages
     # even though it isn't needed
     name, valid_ast = file

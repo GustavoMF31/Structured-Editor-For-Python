@@ -39,6 +39,8 @@ e "extends" the selected node (Usually adds an else statement)
 ! makes a not
 ~ is the tilde operator (called invert)
 -- makes the selected node negative (-x)
+y yanks (copies) the selected node
+p puts (pastes) the selected node
 ```
 
 ## Actions for creating nodes

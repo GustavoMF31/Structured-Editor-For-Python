@@ -40,6 +40,8 @@ command! -buffer -nargs=0 In exec 'py3 act("in")'
 command! -buffer -nargs=0 And exec 'py3 act("and")'
 command! -buffer -nargs=0 Or exec 'py3 act("or")'
 command! -buffer -nargs=0 Extend exec 'py3 act("extend")'
+command! -buffer -nargs=0 Yank exec 'py3 act("yank")'
+command! -buffer -nargs=0 Put exec 'py3 act("put")'
 command! -buffer -nargs=0 MakeInvert exec 'py3 act("make_invert")'
 command! -buffer -nargs=0 MakeNot exec 'py3 act("make_not")'
 command! -buffer -nargs=0 MakeUAdd exec 'py3 act("make_uadd")'
@@ -103,6 +105,8 @@ nnoremap <buffer> ~ :MakeInvert<Enter>
 " TODO: Move the ++ and -- behavior to the + and - keys
 " nnoremap <buffer> ++ :MakeUAdd<Enter>
 nnoremap <buffer> -- :MakeUSub<Enter>
+nnoremap <buffer> y :Yank<Enter>
+nnoremap <buffer> p :Put<Enter>
 
 " TODO: Is this Actions comment in the right place?
 " Actions

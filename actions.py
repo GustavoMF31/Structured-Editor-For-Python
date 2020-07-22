@@ -8,7 +8,6 @@ import operations
 import validators
 
 # TODO: Call that calls a function !on! the selected expression
-# TODO: Copy and paste
 # TODO: Remove the current attr (Go back one)
 # TODO: Have a blank line on top of for and while
 
@@ -508,6 +507,47 @@ def extend(cursor_trail, tree, _):
     return []
 
 
+def yank(cursor_trail, tree, _):
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+    # TODO: Multi level undo
+    tree.states_for_actions["yanked"] = deepcopy(selected_node)
+    
+
+def put(cursor_trail, tree, _):
+    selected_node = core_logic.get_node_at_cursor(cursor_trail, tree)
+
+    try:
+        yanked = tree.states_for_actions["yanked"]
+    except KeyError:
+        print("No yanked node")
+        return
+
+    # Or they have the same type
+    # or they are both statements
+    # or they are both expressions
+    # or it's an expression being pasted into a statement
+    # (In this case we'll wrap it into an Expr)
+    # otherwise, we can't paste here
+    if not (
+               (type(selected_node) == type(yanked))
+            or (isinstance(selected_node, ast.stmt) and isinstance(yanked, ast.stmt))
+            or (isinstance(selected_node, ast.stmt) and isinstance(yanked, ast.expr))
+            or (isinstance(selected_node, ast.expr) and isinstance(yanked, ast.expr))
+           ):
+
+         print("Cannot paste here, the type is different")
+         return
+
+    if isinstance(selected_node, ast.stmt) and isinstance(yanked, ast.expr):
+        # Fix the type by wrapping the expression into an Expr
+        # Making both into ast.stmt
+        yanked = ast.Expr(value=yanked)
+
+    # TODO: Add the mirror logic for unwrapping an Expr into it's value
+
+    core_logic.set_node_at_cursor(cursor_trail, tree, yanked)
+
+
 # Local actions only interact with the current node and it's children
 # While contextual (non local) actions can interact with the whole AST
 
@@ -544,6 +584,9 @@ actions = {
     # Boolean operation
     "and"        : operations.to_bool_op(ast.And),
     "or"        : operations.to_bool_op(ast.Or),
+
+    "yank": (yank, False),
+    "put": (put, False)
 }
 
 

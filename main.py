@@ -29,6 +29,10 @@ filename = buffer.name
 # The original ast
 ast = ast.parse("\n".join(buffer[:]))
 
+# Set the initial action state dict
+# Stores stuff like the copy and pasted node
+ast.states_for_actions = {}
+
 # Set the initial view
 buffer[:] = renderer.render_view(ast, ast).split("\n")
 
