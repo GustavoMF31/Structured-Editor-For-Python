@@ -7,14 +7,14 @@ def render_view(tree, selected_node, window_width):
     return render(tree, cols_left=window_width)
 
 
-def render(node, identation_levels=0, cols_left=80):
+def render(node, indentation_spaces=0, cols_left=80):
     class_name = type(node).__name__
     render_function = globals().get('render_' + class_name, not_implemented_render)
 
     # indentation is how many levels indented the node should draw itself
     # cols-left is the amount of room it will have left on the line to draw itself
     # given that it will draw the indentation first
-    return render_function(node, identation_levels, cols_left)
+    return render_function(node, indentation_spaces, cols_left)
 
 
 def not_implemented_render(node, indentation, cols_left):
@@ -74,7 +74,12 @@ def render_Import(node, indentation, cols_left):
         
         import_line = indent(indentation, "import (\n")
         # draw_alias_group takes care of indentation
-        alias_groups_lines = ",\n".join(map(lambda x: draw_alias_group(indentation+1, x), alias_groups)) + "\n"
+        alias_groups_lines = ",\n".join(
+                map(
+                    lambda x: draw_alias_group(indentation+SPACES_PER_INDENTATION_LEVEL, x),
+                    alias_groups)
+                ) + "\n"
+
         ending_line = indent(indentation, ")")
 
         return import_line + alias_groups_lines + ending_line
@@ -96,8 +101,8 @@ def render_alias(node, _, __):
     return node.name + as_str
 
 
-def indent(indentation_levels, string):
-    return " " * SPACES_PER_INDENTATION_LEVEL * indentation_levels + string
+def indent(indentation_spaces, string):
+    return " " * indentation_spaces + string
 
 
 def is_import(node):
