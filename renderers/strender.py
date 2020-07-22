@@ -46,53 +46,67 @@ def render_Import(node, indentation, cols_left):
 
     # Remove the indentation size
     # And the size of the import keyword string
-    cols_left = cols_left - SPACES_PER_INDENTATION_LEVEL - len(import_str)
+    cols_left = cols_left - len(import_str)
 
-    rendered_aliases = list(map(render, node.names))
-    
-    # If drawing all of them would go off screen
-    # len + 2 becaus of the ", " in between
+    full_import = ( import_str 
+                    + render_aliases(node.names, indentation, initial_cols_left, cols_left)
+                  )
+
+    return indent(indentation, full_import)
+
+
+def render_ImportFrom(node, indentation, cols_left):
+    initial_cols_left = cols_left
+    # Default level to 0
+    level = node.level if node.level is not None else 0 
+
+    from_str = "from "
+    module_str = "." * level + (node.module if node.module is not None else "")
+    import_str = " import "
+
+    cols_left = cols_left - len(from_str + module_str + import_str)
+    aliases_str = render_aliases(node.names, indentation, initial_cols_left, cols_left)
+
+    return from_str + module_str + import_str + aliases_str
+
+
+def render_aliases(aliases, indentation, initial_cols_left, cols_left):
+     
+    rendered_aliases = list(map(render, aliases))
+
+    # len + 2 because of the ", " in between
     # Except for the last one (so -2 in the end)
-    if sum(map(lambda x: len(x) + 2, rendered_aliases)) -2 > cols_left:
-        # Grouping recovers the initial amount of cols left
-        # but requires one more indentation level
-        cols_left = initial_cols_left - SPACES_PER_INDENTATION_LEVEL 
+    if not sum(map(lambda x: len(x) + 2, rendered_aliases)) -2 > cols_left:
+        # If drawing all of them doesn't go off screen, just render them inline
+        return render_simple_group(indentation, rendered_aliases)
 
-        # Group them such that no group goes off screen
-        alias_groups = [[]]
-        for alias in rendered_aliases:
-            current_group_len = sum(map(lambda x: len(x) +2, alias_groups[-1]))
+    # Grouping recovers the initial amount of cols left
+    # but requires one more indentation level
+    cols_left = initial_cols_left - SPACES_PER_INDENTATION_LEVEL 
 
-            # If adding this alias and a " ," overflows
-            if current_group_len + len(alias) + 2 > cols_left:
-                # Make a new group
-                alias_groups.append([alias])
-            
-            # Otherwise add it to the last group
-            else:
-                alias_groups[-1].append(alias)
+    # Group them such that no group goes off screen
+    alias_groups = [[rendered_aliases[0]]]
+    for alias in rendered_aliases[1:]:
+        current_group_len = sum(map(lambda x: len(x) +2, alias_groups[-1]))
+
+        # If adding this alias and a " ," overflows
+        if current_group_len + len(alias) + 2 > cols_left:
+            # Make a new group
+            alias_groups.append([alias])
         
-        import_line = indent(indentation, "import (\n")
-        # draw_alias_group takes care of indentation
-        alias_groups_lines = ",\n".join(
-                map(
-                    lambda x: draw_alias_group(indentation+SPACES_PER_INDENTATION_LEVEL, x),
-                    alias_groups)
-                ) + "\n"
-
-        ending_line = indent(indentation, ")")
-
-        return import_line + alias_groups_lines + ending_line
-    else:
-        joined_aliases = ", ".join(rendered_aliases)
-
-        rendered_import = f"import {joined_aliases}" 
-        return indent(indentation, rendered_import)
+        # Otherwise add it to the last group
+        else:
+            alias_groups[-1].append(alias)
+    
+    # render_simple_group takes care of indentation
+    return "(\n" + ",\n".join(map(
+                lambda x: render_simple_group(indentation+SPACES_PER_INDENTATION_LEVEL, x),
+                alias_groups)
+            ) + "\n)" 
 
 
-def draw_alias_group(indentation, aliases):
-    return indent(indentation, ", ".join(aliases))
-
+def render_simple_group(indentation_spaces, group):
+    return indent(indentation_spaces, ", ".join(group))
 
 # Doesn't care about indentaion or cols left, just draws itself
 # The parent should take care of that
