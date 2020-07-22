@@ -161,9 +161,8 @@ def move_cursor_right(cursor_trail, ast, _):
 
 
 # TODO: Move to the inserted node (hopefully it's the first child)
-# TODO: Insert inside body of the module
 def insert(cursor_trail, tree, _):
-    """Adds an element to the body of the node.
+    """Adds an element inside the node.
     It's useful to unempty an empty container (like a list)
     before populating it using "append" """
 
@@ -171,6 +170,11 @@ def insert(cursor_trail, tree, _):
     if hasattr(selected_node, "bases"):
         # Add a new base class to the class 
         selected_node.bases.append(ast.Name(id="BaseClass", ctx=ast.Load()))
+
+    # It doesn't make sense to insert into a body because they can't ever be empty
+    # Except for the Module node
+    elif isinstance(selected_node, ast.Module):
+        selected_node.body.append(make_nodes.make_pass())
 
     elif isinstance(selected_node, ast.arguments):
 
