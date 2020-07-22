@@ -100,7 +100,7 @@ nnoremap <buffer> < :LessThan<Enter>
 nnoremap <buffer> <= :LessThanEquals<Enter>
 nnoremap <buffer> & :And<Enter>
 nnoremap <buffer> <Bar> :Or<Enter>
-nnoremap <buffer> ! :Not<Enter>
+nnoremap <buffer> ! :MakeNot<Enter>
 nnoremap <buffer> ~ :MakeInvert<Enter>
 " TODO: Move the ++ and -- behavior to the + and - keys
 " nnoremap <buffer> ++ :MakeUAdd<Enter>
