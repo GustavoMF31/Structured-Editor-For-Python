@@ -70,6 +70,7 @@ vk makes a continue
 
 cl makes a list
 cc makes a function call
+cC calls a function on the selected node
 c. makes an attribute (Like var.x)
 co makes an operation (like a + b)
 cs inserts a string

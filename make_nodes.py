@@ -217,6 +217,18 @@ def make_call(cursor_trail, tree):
             keywords=[],
             )
 
+def make_call_on(cursor_trail, tree):
+    """Calls a function on the selected expression"""
+
+    expr = core_logic.get_node_at_cursor(cursor_trail, tree)
+    expr = expr if isinstance(expr, ast.expr) else make_expression()
+
+    return ast.Call(
+            func = ast.Name(id="f", ctx=ast.Load()),
+            args = [expr],
+            keywords=[]
+            )
+    
 
 # TODO: Have the left side default to the selected expression
 def make_bin_op(left=None, right=None):
@@ -642,7 +654,7 @@ def make_yield_from():
 # Those actions return different nodes depending on the context
 dependent_actions = ["async", "list", "call", "attribute", "named_expression",
                     "tuple", "name", "not", "usub", "invert", "dict", "set",
-                    "generator", "subscript"]
+                    "generator", "subscript", "call_on"]
 
 # Those actions need user input
 user_input_actions = ["string"]
@@ -672,10 +684,8 @@ nodes = {
                     v.is_within(ast.AsyncFunctionDef)
                 ),
             ), make_raise),
-    "call": (v.validate_one_of(
-                v.is_instance_of(ast.stmt),
-                v.is_simple_expression,
-        ), make_call),
+    "call": (v.is_simple_expression, make_call),
+    "call_on" : (v.is_simple_expression, make_call_on),
     "async": (v.validate_one_of(
                 v.is_instance_of(ast.FunctionDef),
                 v.is_instance_of(ast.AsyncFunctionDef),

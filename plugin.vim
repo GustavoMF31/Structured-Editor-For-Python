@@ -57,6 +57,7 @@ command! -buffer -nargs=0 MakeDelete exec 'py3 act("make_delete")'
 command! -buffer -nargs=0 MakeWith exec 'py3 act("make_with")'
 command! -buffer -nargs=0 MakeRaise exec 'py3 act("make_raise")'
 command! -buffer -nargs=0 MakeCall exec 'py3 act("make_call")'
+command! -buffer -nargs=0 MakeCallOn exec 'py3 act("make_call_on")'
 command! -buffer -nargs=0 MakeTry exec 'py3 act("make_try")'
 command! -buffer -nargs=0 MakeAssert exec 'py3 act("make_assert")'
 command! -buffer -nargs=0 MakeGlobal exec 'py3 act("make_global")'
@@ -146,6 +147,7 @@ nnoremap <buffer> cn :In<Enter>
 " c for expressions
 nnoremap <buffer> cl :MakeList<Enter>
 nnoremap <buffer> cc :MakeCall<Enter>
+nnoremap <buffer> cC :MakeCallOn<Enter>
 nnoremap <buffer> c. :MakeAttribute<Enter>
 nnoremap <buffer> co :MakeBinOp<Enter>
 nnoremap <buffer> cs :MakeString<Enter>

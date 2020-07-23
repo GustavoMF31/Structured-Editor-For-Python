@@ -7,7 +7,6 @@ import make_nodes
 import operations
 import validators
 
-# TODO: Call that calls a function !on! the selected expression
 # TODO: Remove the current attr (Go back one)
 # TODO: Have a blank line on top of for and while
 # TODO: Actions that replaces the parent with the selected node
