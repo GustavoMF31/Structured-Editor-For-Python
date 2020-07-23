@@ -13,7 +13,6 @@ import validators
 # TODO: Actions that replaces the parent with the selected node
 # (If the types match), or maybe yank, up, put does the job.
 # TODO: A way to paste from stack overflow
-# TODO: Have funcion application default to a single argument
 # TODO: A way of inserting None
 # TODO: Default values for function parameters
 # TODO: Have a lambda use the selected expression as it's initial body

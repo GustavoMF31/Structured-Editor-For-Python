@@ -213,7 +213,7 @@ def make_call(cursor_trail, tree):
 
     return ast.Call(
             func=expr,
-            args=[],
+            args=[make_expression()],
             keywords=[],
             )
 
