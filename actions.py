@@ -489,6 +489,12 @@ def extend(cursor_trail, tree, _):
             print("Can't have a starred variable outside of an assignment")
             return
 
+        # Does this check make the above one useless?
+        parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
+        if not (isinstance(parent, ast.Tuple) or isinstance(parent, ast.List)):
+            print("A starred expression must be within a list or a tuple")
+            return
+
         parent = core_logic.get_node_at_cursor(cursor_trail[:-1], tree)
 
         if isinstance(parent, ast.Assign) and len(parent.targets) <= 1:
